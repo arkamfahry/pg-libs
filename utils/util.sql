@@ -64,6 +64,42 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- checks if all the values in a varchar (text) array are unique
+CREATE OR REPLACE FUNCTION util.array_varchar_values_unique(val VARCHAR[])
+    RETURNS BOOLEAN AS
+$$
+BEGIN
+    RETURN array_length(val, 1) = array_length(array(SELECT DISTINCT unnest(val)), 1);
+END;
+$$ LANGUAGE plpgsql;
+
+-- checks if all the values in an integer array are unique
+CREATE OR REPLACE FUNCTION util.array_int_values_unique(val INTEGER[])
+    RETURNS BOOLEAN AS
+$$
+BEGIN
+    RETURN array_length(val, 1) = array_length(array(SELECT DISTINCT unnest(val)), 1);
+END;
+$$ LANGUAGE plpgsql;
+
+-- checks if all the values in a bigint array are unique
+CREATE OR REPLACE FUNCTION util.array_bigint_values_unique(val BIGINT[])
+    RETURNS BOOLEAN AS
+$$
+BEGIN
+    RETURN array_length(val, 1) = array_length(array(SELECT DISTINCT unnest(val)), 1);
+END;
+$$ LANGUAGE plpgsql;
+
+-- checks if all the values in a array are unique
+CREATE OR REPLACE FUNCTION util.array_values_unique(val ANYARRAY)
+    RETURNS BOOLEAN AS
+$$
+BEGIN
+    RETURN array_length(val, 1) = array_length(array(SELECT DISTINCT unnest(val)), 1);
+END;
+$$ LANGUAGE plpgsql;
+
 -- sets the updated_at timestamp on a table on update
 CREATE OR REPLACE FUNCTION util.set_updated_at()
     RETURNS TRIGGER AS
