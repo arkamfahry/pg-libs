@@ -5,7 +5,7 @@ CREATE SCHEMA util;
 CREATE OR REPLACE FUNCTION util.text_non_empty_trimmed_text(val TEXT) RETURNS BOOLEAN AS
 $$
 BEGIN
-    RETURN TRIM(val) <> '';
+    RETURN trim(val) <> '';
 END;
 $$ LANGUAGE plpgsql;
 
@@ -13,7 +13,7 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION util.text_null_or_non_empty_trimmed_text(val TEXT) RETURNS BOOLEAN AS
 $$
 BEGIN
-    RETURN val IS NOT NULL AND TRIM(val) <> '';
+    RETURN val IS NOT NULL AND trim(val) <> '';
 END;
 $$ LANGUAGE plpgsql;
 
@@ -23,9 +23,9 @@ $$
 DECLARE
     i INT;
 BEGIN
-    FOR i IN ARRAY_LOWER(val, 1) .. COALESCE(ARRAY_UPPER(val, 1), 0)
+    FOR i IN array_lower(val, 1) .. coalesce(array_upper(val, 1), 0)
         LOOP
-            IF TRIM(val[i]) <> '' THEN
+            IF trim(val[i]) <> '' THEN
                 RETURN TRUE;
             END IF;
         END LOOP;
@@ -44,9 +44,9 @@ BEGIN
         RETURN FALSE;
     END IF;
 
-    FOR i IN ARRAY_LOWER(val, 1) .. COALESCE(ARRAY_UPPER(val, 1), 0)
+    FOR i IN array_lower(val, 1) .. coalesce(array_upper(val, 1), 0)
         LOOP
-            IF TRIM(val[i]) <> '' THEN
+            IF trim(val[i]) <> '' THEN
                 RETURN TRUE;
             END IF;
         END LOOP;
