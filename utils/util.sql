@@ -55,7 +55,7 @@ begin
 end;
 $$ language plpgsql;
 
--- checks if all the values in a text array unique
+-- checks if text array values are unique
 create or replace function util.array_text_values_unique(val text[])
     returns boolean as
 $$
@@ -64,7 +64,21 @@ begin
 end;
 $$ language plpgsql;
 
--- checks if all the values in a varchar (text) array are unique
+-- checks if null or text array values are unique
+create or replace function util.array_null_or_text_values_unique(val text[])
+    returns boolean as
+$$
+begin
+    if val is null then
+        return false;
+    end if;
+
+    return array_length(val, 1) = array_length(array(select distinct unnest(val)), 1);
+end;
+$$ language plpgsql;
+
+
+-- checks if varchar array values are unique
 create or replace function util.array_varchar_values_unique(val varchar[])
     returns boolean as
 $$
@@ -73,7 +87,20 @@ begin
 end;
 $$ language plpgsql;
 
--- checks if all the values in an integer array are unique
+-- checks if null or varchar array values are unique
+create or replace function util.array_null_or_varchar_values_unique(val varchar[])
+    returns boolean as
+$$
+begin
+    if val is null then
+        return false;
+    end if;
+
+    return array_length(val, 1) = array_length(array(select distinct unnest(val)), 1);
+end;
+$$ language plpgsql;
+
+-- checks if integer array values are unique
 create or replace function util.array_int_values_unique(val integer[])
     returns boolean as
 $$
@@ -82,7 +109,20 @@ begin
 end;
 $$ language plpgsql;
 
--- checks if all the values in a bigint array are unique
+-- checks if null or integer array values are unique
+create or replace function util.array_null_or_int_values_unique(val integer[])
+    returns boolean as
+$$
+begin
+    if val is null then
+        return false;
+    end if;
+
+    return array_length(val, 1) = array_length(array(select distinct unnest(val)), 1);
+end;
+$$ language plpgsql;
+
+-- checks if bigint array values are unique
 create or replace function util.array_bigint_values_unique(val bigint[])
     returns boolean as
 $$
@@ -91,7 +131,21 @@ begin
 end;
 $$ language plpgsql;
 
--- checks if all the values in a array are unique
+-- checks if null or bigint array values are unique
+create or replace function util.array_null_or_bigint_values_unique(val bigint[])
+    returns boolean as
+$$
+begin
+    if val is null then
+        return false;
+    end if;
+
+    return array_length(val, 1) = array_length(array(select distinct unnest(val)), 1);
+end;
+$$ language plpgsql;
+
+
+-- checks if any array values are unique
 create or replace function util.array_values_unique(val anyarray)
     returns boolean as
 $$
@@ -99,6 +153,20 @@ begin
     return array_length(val, 1) = array_length(array(select distinct unnest(val)), 1);
 end;
 $$ language plpgsql;
+
+-- checks if null or any array values are unique
+create or replace function util.array_null_or_values_unique(val anyarray)
+    returns boolean as
+$$
+begin
+    if val is null then
+        return false;
+    end if;
+
+    return array_length(val, 1) = array_length(array(select distinct unnest(val)), 1);
+end;
+$$ language plpgsql;
+
 
 -- sets the updated_at timestamp on a table on update
 create or replace function util.set_updated_at()
