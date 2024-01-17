@@ -13,7 +13,11 @@ $$ language plpgsql;
 create or replace function util.text_null_or_non_empty_trimmed_text(val text) returns boolean as
 $$
 begin
-    return val is not null and trim(val) <> '';
+    if val is null then
+        return true;
+    end if;
+
+    return trim(val) <> '';
 end;
 $$ language plpgsql;
 
@@ -25,12 +29,12 @@ declare
 begin
     for i in array_lower(val, 1) .. coalesce(array_upper(val, 1), 0)
         loop
-            if trim(val[i]) <> '' then
-                return true;
+            if trim(val[i]) = '' then
+                return false;
             end if;
         end loop;
 
-    return false;
+    return true;
 end;
 $$ language plpgsql;
 
@@ -41,17 +45,17 @@ declare
     i int;
 begin
     if val is null then
-        return false;
+        return true;
     end if;
 
     for i in array_lower(val, 1) .. coalesce(array_upper(val, 1), 0)
         loop
-            if trim(val[i]) <> '' then
-                return true;
+            if trim(val[i]) = '' then
+                return false;
             end if;
         end loop;
 
-    return false;
+    return true;
 end;
 $$ language plpgsql;
 
@@ -70,7 +74,7 @@ create or replace function util.array_null_or_text_values_unique(val text[])
 $$
 begin
     if val is null then
-        return false;
+        return true;
     end if;
 
     return array_length(val, 1) = array_length(array(select distinct unnest(val)), 1);
@@ -93,7 +97,7 @@ create or replace function util.array_null_or_varchar_values_unique(val varchar[
 $$
 begin
     if val is null then
-        return false;
+        return true;
     end if;
 
     return array_length(val, 1) = array_length(array(select distinct unnest(val)), 1);
@@ -115,7 +119,7 @@ create or replace function util.array_null_or_int_values_unique(val integer[])
 $$
 begin
     if val is null then
-        return false;
+        return true;
     end if;
 
     return array_length(val, 1) = array_length(array(select distinct unnest(val)), 1);
@@ -137,7 +141,7 @@ create or replace function util.array_null_or_bigint_values_unique(val bigint[])
 $$
 begin
     if val is null then
-        return false;
+        return true;
     end if;
 
     return array_length(val, 1) = array_length(array(select distinct unnest(val)), 1);
@@ -160,7 +164,7 @@ create or replace function util.array_null_or_values_unique(val anyarray)
 $$
 begin
     if val is null then
-        return false;
+        return true;
     end if;
 
     return array_length(val, 1) = array_length(array(select distinct unnest(val)), 1);
