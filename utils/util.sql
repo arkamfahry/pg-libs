@@ -171,6 +171,50 @@ begin
 end;
 $$ language plpgsql;
 
+-- check if integer is non 0 value
+create or replace function util.integer_non_zero_integer(val integer)
+    returns boolean as
+$$
+begin
+    return val <> 0;
+end
+$$ language plpgsql;
+
+-- check if integer is null or non 0 value
+create or replace function util.integer_null_or_non_zero_integer(val integer)
+    returns boolean as
+$$
+begin
+    if val is null then
+        return true;
+    end if;
+
+    return val <> 0;
+end
+$$ language plpgsql;
+
+-- check if bigint is non 0 value
+create or replace function util.bigint_non_zero_bigint(val bigint)
+    returns boolean as
+$$
+begin
+    return val <> 0;
+end
+$$ language plpgsql;
+
+-- check if bigint is null or non 0 value
+create or replace function util.bigint_null_or_non_zero_bigint(val bigint)
+    returns boolean as
+$$
+begin
+    if val is null then
+        return true;
+    end if;
+
+    return val <> 0;
+end
+$$ language plpgsql;
+
 
 -- sets the updated_at timestamp on a table on update
 create or replace function util.set_updated_at()
