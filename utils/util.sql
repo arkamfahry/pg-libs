@@ -215,8 +215,17 @@ begin
 end
 $$ language plpgsql;
 
-
 -- sets the updated_at timestamp on a table on update
+create or replace function util.set_updated_at()
+    returns trigger as
+$$
+begin
+    new.updated_at = now();
+    return new;
+end;
+$$ language plpgsql;
+
+-- sets the updated_at timestamp on a table on update when the new value is distinct from the old value
 create or replace function util.set_updated_at()
     returns trigger as
 $$
