@@ -237,3 +237,27 @@ begin
     return new;
 end;
 $$ language plpgsql;
+
+-- increments the version on the updated table record
+create or replace function util.increment_version()
+    returns trigger as
+$$
+begin
+    new.version = new.version + 1;
+    return new;
+end;
+$$ language plpgsql;
+
+-- increments the version on the updated table record if the new value is distinct from the old value
+create or replace function util.increment_version()
+    returns trigger as
+$$
+begin
+    if new is distinct from old then
+        new.version = new.version + 1;
+    end if;
+
+    return new;
+end;
+$$ language plpgsql;
+
