@@ -261,3 +261,54 @@ begin
 end;
 $$ language plpgsql;
 
+-- increments the version and set the updated timestamp on the updated table record
+create or replace function util.set_updated()
+    returns trigger as
+$$
+begin
+    new.version = new.version + 1;
+    new.updated_at = now();
+
+    return new;
+end;
+$$ language plpgsql;
+
+-- increments the version and set the updated timestamp on the updated table record if the new value is distinct from the old value
+create or replace function util.set_updated()
+    returns trigger as
+$$
+begin
+    if new is distinct from old then
+        new.version = new.version + 1;
+        new.updated_at = now();
+    end if;
+
+    return new;
+end;
+$$ language plpgsql;
+
+-- set created fields on insert in opinionated way
+create or replace function set_created()
+    returns trigger as
+$$
+begin
+    new.id = tg_table_name || '_' || gen_random_uuid();
+    new.version = 0;
+    new.created_at = now();
+
+    return new;
+end;
+$$ language plpgsql;
+
+
+-- set updated fields on update in opinionated way
+create or replace function set_updated()
+    returns trigger as
+$$
+begin
+    new.version = new.version + 1;
+    new.updated_at = now();
+
+    return new;
+end;
+$$ language plpgsql;
