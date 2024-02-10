@@ -273,6 +273,7 @@ begin
 end;
 $$ language plpgsql;
 
+-- set created fields on insert in opinionated way
 create or replace function util.on_create()
     returns trigger as
 $$
