@@ -273,7 +273,6 @@ begin
 end;
 $$ language plpgsql;
 
--- set created fields on insert in opinionated way
 create or replace function util.on_create()
     returns trigger as
 $$
@@ -297,6 +296,9 @@ begin
     return new;
 end;
 $$ language plpgsql;
+
+-- set created fields on insert in opinionated way
+
 
 -- set updated fields on update if the new value is distinct from the old value
 create or replace function util.on_update()
