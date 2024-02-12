@@ -266,6 +266,7 @@ create or replace function util.on_create()
     returns trigger as
 $$
 begin
+    new.id = util.gen_random_ulid();
     new.version = 0;
     new.created_at = now();
 
@@ -273,12 +274,29 @@ begin
 end;
 $$ language plpgsql;
 
--- set created fields on insert in opinionated way
+-- set created fields on insert in opinionated way by inferring the table name as prefix for id
 create or replace function util.on_create()
     returns trigger as
 $$
 begin
     new.id = tg_table_name || '_' || util.gen_random_ulid();
+    new.version = 0;
+    new.created_at = now();
+
+    return new;
+end;
+$$ language plpgsql;
+
+-- set created fields on insert in opinionated way by passing in the prefix for id
+create or replace function util.on_create()
+    returns trigger as
+$$
+declare
+        id_prefix text;
+begin
+    id_prefix := tg_argv[0];
+
+    new.id = id_prefix || '_' || util.gen_random_ulid();
     new.version = 0;
     new.created_at = now();
 
