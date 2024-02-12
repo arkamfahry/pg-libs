@@ -291,12 +291,8 @@ $$ language plpgsql;
 create or replace function util.on_create()
     returns trigger as
 $$
-declare
-        id_prefix text;
 begin
-    id_prefix := tg_argv[0];
-
-    new.id = id_prefix || '_' || util.gen_random_ulid();
+    new.id = tg_argv[0] || '_' || util.gen_random_ulid();
     new.version = 0;
     new.created_at = now();
 
